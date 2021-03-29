@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
+import './App.css';
 import UserData, { userData } from './userData'
 
 
 const UserCard = (props) => { 
   return(
-    <div className='ctn'>
+    <div className='ctn'  >
       <img src={props.user.picture}></img>
       <p>Name:{props.user.name}</p>
       <p>Age:{props.user.age}</p>
@@ -14,6 +15,8 @@ const UserCard = (props) => {
   )
 }
 
+const renderConfig ={name: "", typeOfSort: "default"}
+
 function App() {
   const [users, setUsers] = useState(userData)
 
@@ -22,9 +25,30 @@ function App() {
     setUsers(filter)
   }
 
-  const handlSortUsers = e => {
-    const sorting = [...userData].sort((a, b) => a.age - b.age);
-    setUsers(sorting)
+  // const handlSortUsers = e => {
+  //   const sorting = [...userData].sort((a, b) => a.age - b.age);
+  //   setUsers(sorting)
+  // }
+
+  const createArrayByConfig = () =>{
+    const array = userData.filter(user => {
+      return (user.name.toLowerCase()).includes(renderConfig.name)
+    })
+    if(renderConfig.typeOfSort === "asc"){
+      return array.sort((a, b)=> a.age-b.age);
+    }
+    if(renderConfig.typeOfSort === "desc"){
+      return array.sort((a, b)=> b.age-a.age);
+    }
+    return array
+  }
+
+  
+
+  const handlSortUsers = (e) =>{
+    renderConfig.typeOfSort = e.target.value;
+    const array = createArrayByConfig()
+    setUsers(array)
   }
 
   return (
@@ -34,9 +58,10 @@ function App() {
       placeholder='Enter name...'
       onChange={handlSearchUsers}
       />
-      <select onChange={handlSortUsers} name="sort" id="">
-        <option value="sorting">Sorting</option>
-        <option value="byAge">By age</option>
+        <select name="Age" onChange={handlSortUsers}>
+            <option  value="default">default</option>
+            <option  value="asc">Age asc</option>
+            <option  value="desc">Age desc</option>
         </select>
       </header>
       <main className="main">
